@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>10/01/2026 - Nuestro Día Especial</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Great+Vibes&family=Montserrat:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        romantic: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            200: '#fecdd3',
+                            300: '#fda4af',
+                            400: '#fb7185',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                            800: '#9f1239',
+                            900: '#881337',
+                            950: '#4c0519',
+                        },
+                        gold: {
+                            300: '#fde047',
+                            400: '#facc15',
+                            500: '#eab308',
+                            600: '#ca8a04',
+                        }
+                    },
+                    fontFamily: {
+                        cursive: ['"Great Vibes"', 'cursive'],
+                        handwriting: ['"Dancing Script"', 'cursive'],
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Montserrat"', 'sans-serif']
+                    },
+                    animation: {
+                        'spin-slow': 'spin 10s linear infinite',
+                        'float': 'float 5s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 2s infinite alternate',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        pulseGlow: {
+                            '0%': { boxShadow: '0 0 15px rgba(244, 63, 94, 0.4)' },
+                            '100%': { boxShadow: '0 0 30px rgba(244, 63, 94, 0.9), 0 0 45px rgba(250, 204, 21, 0.5)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: radial-gradient(circle at top, #2d0612 0%, #170208 50%, #0a0104 100%);
+            color: #ffe4e6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-card-rose {
+            background: rgba(244, 63, 94, 0.08);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(244, 63, 94, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(190, 18, 60, 0.25);
+        }
+
+        /* Filmstrip style frame */
+        .film-frame {
+            background-color: #121212;
+            border-left: 12px solid #000;
+            border-right: 12px solid #000;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .film-frame::before, .film-frame::after {
+            content: "";
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 12px;
+            background: repeating-linear-gradient(180deg, #fff 0px, #fff 8px, transparent 8px, transparent 20px);
+            z-index: 10;
+        }
+        .film-frame::before { left: -12px; }
+        .film-frame::after { right: -12px; }
+
+        .heart-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 10;
+            animation: floatUp 7s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(105vh) scale(0.3) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.8; }
+            80% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1.2) rotate(360deg); opacity: 0; }
+        }
+
+        /* Hidden YouTube Iframe */
+        .yt-audio-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0.01;
+            pointer-events: none;
+            overflow: hidden;
+            left: -9999px;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen text-rose-100 flex flex-col justify-between">
+
+    <div id="heartsContainer"></div>
+
+    <div id="welcomeScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xl p-4 transition-opacity duration-700">
+        <div class="text-center space-y-6 max-w-md mx-auto p-8 rounded-3xl glass-card-rose animate-float border border-rose-500/40">
+            <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-tr from-rose-600 to-amber-400 flex items-center justify-center shadow-2xl shadow-rose-600/50 animate-pulse">
+                <i class="fas fa-heart text-4xl text-white"></i>
+            </div>
+
+            <div class="space-y-2">
+                <span class="text-xs uppercase tracking-widest text-amber-300 font-semibold">10/01/2026</span>
+                <h1 class="font-cursive text-5xl text-rose-200">Tengo algo especial para ti</h1>
+                <p class="text-sm text-rose-200/80 font-light">
+                    He preparado este rincón lleno de nuestros recuerdos, palabras y amor.
+                </p>
+            </div>
+
+            <button onclick="startDashboard()" class="w-full py-4 px-8 rounded-full bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white font-bold text-lg shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3">
+                <i class="fas fa-key text-amber-200"></i>
+                <span>Abrir Mi Corazón</span>
+            </button>
+        </div>
+    </div>
+
+    <header class="sticky top-0 z-40 w-full glass-card border-b border-rose-500/20 px-4 py-3">
+        <div class="max-w-5xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-rose-500 animate-ping"></span>
+                <span class="font-serif font-bold text-xs sm:text-sm tracking-wider text-rose-200">10/01/26 • NUESTRO DÍA</span>
+            </div>
+
+            <!-- FLOATING MUSIC PLAYER CONTROL -->
+            <div class="flex items-center gap-3 glass-card-rose px-3 py-1.5 rounded-full border border-rose-500/30">
+                <div class="relative flex items-center justify-center">
+                    <div id="vinylDisk" class="w-8 h-8 rounded-full bg-black border-2 border-amber-400/80 flex items-center justify-center shadow-md">
+                        <i class="fas fa-compact-disc text-amber-300 text-lg"></i>
+                    </div>
+                </div>
+                <div class="hidden sm:block text-left text-[11px] leading-tight pr-1">
+                    <p class="font-bold text-rose-100">Ahí Estabas Tú</p>
+                    <p class="text-rose-300/70 text-[10px]">Carín León</p>
+                </div>
+                <button id="playPauseBtn" onclick="toggleAudio()" class="w-8 h-8 rounded-full bg-rose-600 hover:bg-rose-500 text-white flex items-center justify-center transition-all shadow-md">
+                    <i id="playIcon" class="fas fa-pause text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-8 space-y-12 relative z-10 w-full">
+
+        <!-- TITLE HERO -->
+        <section class="text-center space-y-4">
+            <span class="px-4 py-1.5 rounded-full glass-card-rose text-amber-300 text-xs font-semibold uppercase tracking-widest inline-block border border-amber-400/30">
+                <i class="fas fa-sparkles text-rose-400 mr-1"></i> Coincidir Contigo Fue Lo Mejor
+            </span>
+            <h1 class="font-cursive text-6xl sm:text-7xl md:text-8xl text-transparent bg-clip-text bg-gradient-to-r from-rose-200 via-rose-400 to-amber-200 leading-tight">
+                10/01/26 - Amor de mi vida
+            </h1>
+            <p class="font-serif italic text-rose-200/90 text-lg sm:text-xl max-w-xl mx-auto">
+                "El día que se definió y concretó todo lo que habíamos pensado y soñado."
+            </p>
+        </section>
+
+        <section class="glass-card p-6 rounded-3xl text-center space-y-4 border border-rose-500/30">
+            <h2 class="text-xs uppercase tracking-widest text-amber-300 font-semibold flex items-center justify-center gap-2">
+                <i class="far fa-clock"></i>
+                <span>Tiempo transcurrido desde nuestro día especial</span>
+            </h2>
+            <div id="counter" class="grid grid-cols-4 gap-3 max-w-md mx-auto">
+                <div class="glass-card p-3 rounded-2xl">
+                    <span id="cntDays" class="text-2xl sm:text-4xl font-bold text-amber-300 font-mono">00</span>
+                    <span class="block text-[10px] sm:text-xs text-rose-300/70 mt-1 uppercase">Días</span>
+                </div>
+                <div class="glass-card p-3 rounded-2xl">
+                    <span id="cntHours" class="text-2xl sm:text-4xl font-bold text-rose-200 font-mono">00</span>
+                    <span class="block text-[10px] sm:text-xs text-rose-300/70 mt-1 uppercase">Horas</span>
+                </div>
+                <div class="glass-card p-3 rounded-2xl">
+                    <span id="cntMinutes" class="text-2xl sm:text-4xl font-bold text-rose-200 font-mono">00</span>
+                    <span class="block text-[10px] sm:text-xs text-rose-300/70 mt-1 uppercase">Min.</span>
+                </div>
+                <div class="glass-card p-3 rounded-2xl">
+                    <span id="cntSeconds" class="text-2xl sm:text-4xl font-bold text-rose-400 font-mono">00</span>
+                    <span class="block text-[10px] sm:text-xs text-rose-300/70 mt-1 uppercase">Seg.</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="space-y-4">
+            <div class="text-center">
+                <h2 class="font-serif text-3xl font-semibold text-rose-100 flex items-center justify-center gap-2">
+                    <i class="fas fa-envelope-open-text text-rose-500"></i>
+                    <span>Mis Palabras del Teléfono</span>
+                </h2>
+                <p class="text-xs text-rose-300/70 mt-1">Escrito con todo el amor desde mi corazón</p>
+            </div>
+
+            <div class="glass-card p-6 sm:p-8 rounded-3xl relative overflow-hidden border border-rose-500/40 shadow-2xl">
+                <div class="flex items-center justify-between border-b border-rose-500/20 pb-4 mb-4">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-mobile-alt text-amber-400 text-lg"></i>
+                        <span class="text-xs font-mono text-rose-300">Nota del 10/01/2026</span>
+                    </div>
+                    <button onclick="typeWriterEffect()" class="px-3 py-1 rounded-full bg-rose-800/60 hover:bg-rose-700 text-xs text-rose-200 transition-all border border-rose-500/30 flex items-center gap-1.5">
+                        <i class="fas fa-pen-nib text-amber-300"></i>
+                        <span>Escribir de nuevo</span>
+                    </button>
+                </div>
+
+                <div class="min-h-[160px] flex items-center">
+                    <p id="typedLetter" class="font-serif italic text-base sm:text-xl text-rose-100 leading-relaxed pl-4 border-l-4 border-rose-500">
+                        <!-- Content inserted via JavaScript -->
+                    </p>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-rose-500/20 flex items-center justify-between">
+                    <span class="font-handwriting text-2xl text-amber-300">Por siempre tuyo/a</span>
+                    <span class="text-xs text-rose-400 font-mono"><i class="fas fa-check-double mr-1"></i> Leído con el alma</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="space-y-6">
+            <div class="text-center space-y-2">
+                <h2 class="font-serif text-3xl font-semibold text-rose-100 flex items-center justify-center gap-2">
+                    <i class="fas fa-film text-rose-500"></i>
+                    <span>Tira de Recuerdos de Nuestro Amor</span>
+                </h2>
+                <p class="text-xs text-rose-300/70">Nuestros momentos capturados para la eternidad</p>
+            </div>
+
+            <!-- Custom Photo Uploader Option -->
+            <div class="glass-card p-3 rounded-2xl flex flex-wrap items-center justify-between gap-3 text-xs text-rose-200">
+                <span class="flex items-center gap-2">
+                    <i class="fas fa-images text-amber-400"></i>
+                    <span>¿Cargando desde otro dispositivo? Puedes cambiar tus fotos aquí:</span>
+                </span>
+                <label class="cursor-pointer px-4 py-1.5 rounded-full bg-rose-700 hover:bg-rose-600 text-white font-medium transition-all shadow flex items-center gap-1.5">
+                    <i class="fas fa-upload"></i>
+                    <span>Seleccionar Fotos</span>
+                    <input type="file" accept="image/*" multiple onchange="loadCustomImages(event)" class="hidden">
+                </label>
+            </div>
+
+            <!-- FILMSTRIP GALLERY GRID -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- FRAME 1 -->
+                <div class="film-frame p-3 rounded-xl glass-card group cursor-pointer hover:scale-[1.02] transition-all" onclick="zoomImage(document.getElementById('img1').src, '10/01/26 - Amor de mi vida')">
+                    <div class="relative aspect-[9/16] rounded-lg overflow-hidden bg-black/60 flex items-center justify-center">
+                        <img id="img1" src="1002509621.jpg" alt="10/01/26 - Amor de mi vida" class="w-full h-full object-cover" onerror="handleImgError(this, '10/01/26 - Amor de mi vida')">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-rose-200 font-semibold text-xs">
+                            <i class="fas fa-search-plus mr-1"></i> Ampliar
+                        </div>
+                    </div>
+                    <div class="mt-3 text-center space-y-1">
+                        <p class="font-cursive text-2xl text-amber-300">10/01/26</p>
+                        <p class="font-serif text-xs text-rose-200">Amor de mi vida</p>
+                    </div>
+                </div>
+
+                <!-- FRAME 2 -->
+                <div class="film-frame p-3 rounded-xl glass-card group cursor-pointer hover:scale-[1.02] transition-all" onclick="zoomImage(document.getElementById('img2').src, 'Te amo')">
+                    <div class="relative aspect-[9/16] rounded-lg overflow-hidden bg-black/60 flex items-center justify-center">
+                        <img id="img2" src="1002509627.jpg" alt="Te amo" class="w-full h-full object-cover" onerror="handleImgError(this, 'Te amo')">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-rose-200 font-semibold text-xs">
+                            <i class="fas fa-search-plus mr-1"></i> Ampliar
+                        </div>
+                    </div>
+                    <div class="mt-3 text-center space-y-1">
+                        <p class="font-cursive text-2xl text-amber-300">Ahí Estabas Tú</p>
+                        <p class="font-serif text-xs text-rose-200">Te amo</p>
+                    </div>
+                </div>
+
+                <!-- FRAME 3 -->
+                <div class="film-frame p-3 rounded-xl glass-card group cursor-pointer hover:scale-[1.02] transition-all" onclick="zoomImage(document.getElementById('img3').src, 'Te Amo Infinitamente')">
+                    <div class="relative aspect-[9/16] rounded-lg overflow-hidden bg-black/60 flex items-center justify-center">
+                        <img id="img3" src="1002509636.jpg" alt="Te Amo Infinitamente" class="w-full h-full object-cover" onerror="handleImgError(this, 'Te Amo Infinitamente')">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-rose-200 font-semibold text-xs">
+                            <i class="fas fa-search-plus mr-1"></i> Ampliar
+                        </div>
+                    </div>
+                    <div class="mt-3 text-center space-y-1">
+                        <p class="font-cursive text-2xl text-amber-300">10 • 01 • 26</p>
+                        <p class="font-serif text-xs text-rose-200">TE AMO INFINITAMENTE</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="glass-card p-5 rounded-2xl space-y-2 border-t-2 border-rose-500 hover:border-amber-400 transition-all">
+                <i class="fas fa-infinity text-2xl text-amber-300"></i>
+                <h3 class="font-serif font-bold text-rose-100">Increíble Coincidir</h3>
+                <p class="text-xs text-rose-200/80 leading-relaxed">
+                    Entre millones de personas y caminos, el destino nos reunió exactamente donde teníamos que estar.
+                </p>
+            </div>
+            <div class="glass-card p-5 rounded-2xl space-y-2 border-t-2 border-amber-400 hover:border-rose-500 transition-all">
+                <i class="fas fa-eye text-2xl text-amber-300"></i>
+                <h3 class="font-serif font-bold text-rose-100">Mirarte a los Ojos</h3>
+                <p class="text-xs text-rose-200/80 leading-relaxed">
+                    Estar frente a ti expresando todo lo que sentía fue el momento más auténtico de mi vida.
+                </p>
+            </div>
+            <div class="glass-card p-5 rounded-2xl space-y-2 border-t-2 border-rose-400 hover:border-amber-300 transition-all">
+                <i class="fas fa-stars text-2xl text-amber-300"></i>
+                <h3 class="font-serif font-bold text-rose-100">Todo lo Soñado</h3>
+                <p class="text-xs text-rose-200/80 leading-relaxed">
+                    Desde ese día definimos y concretamos cada uno de los planes que habíamos construido juntas/os.
+                </p>
+            </div>
+        </section>
+
+        <section class="text-center py-6 glass-card p-8 rounded-3xl space-y-6 border border-rose-500/40">
+            <div class="space-y-2">
+                <h2 class="font-serif text-3xl font-bold text-rose-100">Celebrar Nuestro Amor</h2>
+                <p class="text-xs text-rose-300/80 max-w-md mx-auto">
+                    Haz clic aquí para enviar una lluvia de abrazos y corazones voladores
+                </p>
+            </div>
+
+            <button onclick="showerLove()" class="px-8 py-4 rounded-full bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white font-bold text-lg shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 border border-amber-300/40 flex items-center gap-3 mx-auto">
+                <i class="fas fa-heart text-amber-200 text-xl animate-bounce"></i>
+                <span>¡Lluvia de Amor!</span>
+            </button>
+
+            <p class="font-cursive text-4xl text-amber-300 pt-2">
+                Te amo infinitamente ❤️
+            </p>
+        </section>
+
+    </main>
+
+    <!-- HIDDEN YOUTUBE PLAYER CONTAINER -->
+    <div class="yt-audio-hidden">
+        <div id="ytplayer"></div>
+    </div>
+
+    <!-- LIGHTBOX MODAL FOR IMAGES -->
+    <div id="zoomModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-4" onclick="closeZoom()">
+        <div class="relative max-w-2xl w-full text-center" onclick="event.stopPropagation()">
+            <button onclick="closeZoom()" class="absolute -top-10 right-0 text-white text-2xl hover:text-rose-400"><i class="fas fa-times"></i></button>
+            <img id="modalImg" src="" alt="Recuerdo" class="max-h-[80vh] mx-auto rounded-2xl border border-rose-500/50 shadow-2xl">
+            <p id="modalCaption" class="mt-4 font-cursive text-3xl text-amber-300"></p>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="py-6 text-center text-xs text-rose-300/60 border-t border-rose-500/10">
+        <p>Dashboard Interactivo Romántico • 10/01/2026</p>
+    </footer>
+
+    <script>
+        // Exact text required by user
+        const letterText = "Amor se que esto no es una cosa de otro mundo, pero para mi es algo increíble coincidir, estar acá mirándote a los ojos expresando te estas palabras que eh escrito para ti, el poder estar acá juntos, el que allá llegado nuestro día, que apartir de este día se define y se concreta todo lo que hemos pensado y soñado.";
+
+        // YouTube IFrame API Initialization
+        let player;
+        let isPlaying = false;
+
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('ytplayer', {
+                height: '0',
+                width: '0',
+                videoId: 'PxRP09ebl74', // "Ahí Estabas Tú" - Carín León
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 0,
+                    'loop': 1,
+                    'playlist': 'PxRP09ebl74'
+                },
+                events: {
+                    'onReady': onPlayerReady
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            // Player is ready
+        }
+
+        function startDashboard() {
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            welcomeScreen.classList.add('opacity-0', 'pointer-events-none');
+
+            // Play music if API ready
+            if (player && player.playVideo) {
+                player.playVideo();
+                isPlaying = true;
+                updateMusicUI();
+            }
+
+            showerLove();
+            typeWriterEffect();
+        }
+
+        function toggleAudio() {
+            if (!player) return;
+            if (isPlaying) {
+                player.pauseVideo();
+                isPlaying = false;
+            } else {
+                player.playVideo();
+                isPlaying = true;
+            }
+            updateMusicUI();
+        }
+
+        function updateMusicUI() {
+            const vinyl = document.getElementById('vinylDisk');
+            const playIcon = document.getElementById('playIcon');
+
+            if (isPlaying) {
+                vinyl.classList.add('animate-spin-slow');
+                playIcon.className = 'fas fa-pause text-xs';
+            } else {
+                vinyl.classList.remove('animate-spin-slow');
+                playIcon.className = 'fas fa-play text-xs pl-0.5';
+            }
+        }
+
+        // Typewriter Effect for Letter
+        function typeWriterEffect() {
+            const elem = document.getElementById('typedLetter');
+            elem.innerHTML = '';
+            let i = 0;
+            const speed = 30;
+
+            function type() {
+                if (i < letterText.length) {
+                    elem.innerHTML += letterText.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        // Countdown Timer Logic from 10/01/2026
+        const startDate = new Date("2026-01-10T00:00:00").getTime();
+
+        function updateCounter() {
+            const now = new Date().getTime();
+            const diff = Math.abs(now - startDate);
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById("cntDays").innerText = days < 10 ? "0" + days : days;
+            document.getElementById("cntHours").innerText = hours < 10 ? "0" + hours : hours;
+            document.getElementById("cntMinutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+            document.getElementById("cntSeconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+        }
+
+        setInterval(updateCounter, 1000);
+        updateCounter();
+
+        // Image Fallback Generator
+        function handleImgError(imgElem, title) {
+            const canvas = document.createElement("canvas");
+            canvas.width = 400;
+            canvas.height = 700;
+            const ctx = canvas.getContext("2d");
+
+            const grad = ctx.createLinearGradient(0, 0, 400, 700);
+            grad.addColorStop(0, "#881337");
+            grad.addColorStop(1, "#170308");
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 400, 700);
+
+            ctx.fillStyle = "#fb7185";
+            ctx.font = "60px FontAwesome, sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("❤️", 200, 320);
+
+            ctx.fillStyle = "#fde047";
+            ctx.font = "bold 24px Montserrat, sans-serif";
+            ctx.fillText("10/01/2026", 200, 390);
+
+            ctx.fillStyle = "#ffe4e6";
+            ctx.font = "16px Montserrat, sans-serif";
+            ctx.fillText(title, 200, 430);
+
+            imgElem.src = canvas.toDataURL("image/png");
+        }
+
+        // Custom image uploader handler
+        function loadCustomImages(event) {
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
+
+            const ids = ["img1", "img2", "img3"];
+            for (let i = 0; i < Math.min(files.length, 3); i++) {
+                const reader = new FileReader();
+                const targetImg = document.getElementById(ids[i]);
+                reader.onload = function(e) {
+                    targetImg.src = e.target.result;
+                };
+                reader.readAsDataURL(files[i]);
+            }
+            showerLove();
+        }
+
+        // Zoom Modal
+        function zoomImage(src, caption) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('modalCaption').innerText = caption;
+            const modal = document.getElementById('zoomModal');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+        }
+
+        function closeZoom() {
+            const modal = document.getElementById('zoomModal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        // Floating Hearts Background
+        function createHearts() {
+            const container = document.getElementById("heartsContainer");
+            const symbols = ["❤️", "💖", "✨", "💕", "🌹"];
+
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement("div");
+                heart.className = "heart-particle";
+                heart.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                heart.style.left = Math.random() * 100 + "vw";
+                heart.style.animationDuration = (Math.random() * 4 + 5) + "s";
+                heart.style.animationDelay = (Math.random() * 5) + "s";
+                heart.style.fontSize = (Math.random() * 16 + 12) + "px";
+                container.appendChild(heart);
+            }
+        }
+        createHearts();
+
+        // Confetti Heart Shower
+        function showerLove() {
+            const end = Date.now() + 2 * 1000;
+            const colors = ['#f43f5e', '#fbbf24', '#ffe4e6'];
+
+            (function frame() {
+                confetti({
+                    particleCount: 3,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: colors
+                });
+                confetti({
+                    particleCount: 3,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: colors
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            })();
+        }
+    </script>
+</body>
+</html>
